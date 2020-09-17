@@ -1,0 +1,10 @@
+Numero2 = Cuenta * 123.99 ;
+Resultado = ( Numero + Cuenta ) ;
+Ck_5
+43
+42u
+.2
+0.58
+program
+begin
+end

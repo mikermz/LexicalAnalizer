@@ -1,0 +1,6 @@
+programa
+begin
+Cuenta := 23.67 + ( Numero - 89 ) ;
+Numero := Cuenta * 123.99 ;
+Resultado := Numero + Cuenta ;
+end
