@@ -22,16 +22,17 @@ public class LexicalAnalyzer {
             ID_ACHAR = 400,
             ID_OESPECIAL = 405,
             ID_SCHAR = 401,
-            ID_IDENTIF = 301,
+            //            ID_IDENTIF = 301,
             ID_INT_NUM = 310,
             ID_FLOAT_NUM = 320,
-            ID_EQUAL = 201,
+            ID_EQUAL = 301,
             ID_ADD = 500,
             ID_SUB = 501,
             ID_MULT = 502,
-            ID_COLON = 205,
+            ID_COLON = 305,
             ID_BLNKS = 300;
-    private int ID_KEYWORD = 800;
+    private int ID_KEYWORD = 600;
+    private int ID_IDENTIF = 800;
     private FileReader file;
     private ListSt errors, symbols, validT, kw, simple, intNum, floatNum;
     char state = '0';
@@ -41,13 +42,14 @@ public class LexicalAnalyzer {
     String number = "", numF = "";
     String currentLine;
     String token = "";
-    String keyword = "";
+    String type = "";
     boolean keep = true;
     boolean cut = false;
     boolean error = false;
 
     //String keywords []= new FileReader("src//LexicalA//Keywords.txt").array();
     String keywords[] = new String[]{"programa", "begin", "end"};
+    String ident[] = new String[]{"Cuenta", "Numero", "Resultado"};
 
     LexicalAnalyzer(String path) {
         file = new FileReader(path);
@@ -73,9 +75,9 @@ public class LexicalAnalyzer {
                         this.addInts();
                     } else if (idToken == 320) {
                         this.addFloats();
-                    } else if (idToken == 301) {
-                        this.addSymbol();
                     } else if (idToken >= 800) {
+                        this.addSymbol();
+                    } else if (idToken >= 600) {
                         this.addKeywords();
                     } else if (idToken == 401) {
                         this.addSimpleCharacter();
@@ -111,7 +113,7 @@ public class LexicalAnalyzer {
                 if (error) {
                     // si se corto con un caracter, entonces retroceder para luego evaluarlo
                     linePos++;
-      
+
                     reset();
                     return grammarValue(ID_ERROR);
 
@@ -182,7 +184,7 @@ public class LexicalAnalyzer {
                         state = '4';//identifiers
                     } else if (Character.isLowerCase(ch)) {
                         state = '8';//keyword
-                    } else if (isSimpleCharacter(ch)) {
+                    } else if (isCharacter(ch)) {
                         idToken = clasify(state);
                         //state = 'z';//imprime caracter 
                     } else if (Character.isDigit(ch)) {
@@ -324,8 +326,8 @@ public class LexicalAnalyzer {
         switch (c) {
             case ID_ERROR:
                 return "Lexical Error";
-            case ID_IDENTIF:
-                return "id";
+//            case ID_IDENTIF:
+//                return "id";
             case ID_INT_NUM:
                 return "intliteral";
             case ID_SCHAR:
@@ -345,34 +347,204 @@ public class LexicalAnalyzer {
         return String.valueOf((char) c);
     }
 
+    private String charType(int c) {
+        switch (c) {
+            case '!':
+                if (c == 33) {
+                    type = "Exclamation point";
+                    return type;
+                }
+            case '"':
+                if (c == 34) {
+                    type = "Quotations marks";
+                    return type;
+                }
+            case '#':
+                if (c == 35) {
+                    type = "Number sign";
+
+                    return type;
+                }
+            case '$':
+                if (c == 36) {
+                    type = "Currency symbol";
+
+                    return type;
+                }
+            case '%':
+                if (c == 37) {
+                    type = "Percent sign";
+
+                    return type;
+                }
+            case '&':
+                if (c == 38) {
+                    type = "And symbol";
+
+                    return type;
+                }
+            case '(':
+                if (c == 40) {
+                    type = "Left parentheses";
+
+                    return type;
+                }
+            case ')':
+                if (c == 41) {
+                    type = "Right parentheses";
+                    return type;
+                }
+            case '*':
+                if (c == 42) {
+
+                    type = "Asterisks";
+                    return type;
+                }
+            case '+':
+                if (c == 43) {
+                    type = "Addition sign";
+
+                    return type;
+                }
+            case ',':
+                if (c == 44) {
+                    type = "Comma";
+
+                    return type;
+                }
+            case '-':
+                if (c == 45) {
+                    type = "Hyphen";
+
+                    return type;
+                }
+            case '.':
+                if (c == 46) {
+                    type = "Period";
+
+                    return type;
+                }
+            case '/':
+                if (c == 47) {
+                    type = "Slash";
+
+                    return type;
+                }
+            case ':':
+                if (c == 58) {
+                    type = "Colon";
+
+                    return type;
+                }
+            case ';':
+                if (c == 59) {
+                    type = "Semicolon";
+
+                    return type;
+                }
+            case '<':
+                if (c == 60) {
+                    type = "Less than";
+
+                    return type;
+                }
+            case '=':
+                if (c == 61) {
+                    type = "Equals Sign";
+
+                    return type;
+                }
+            case '>':
+                if (c == 62) {
+                    type = "Greater than";
+
+                    return type;
+                }
+            case '?':
+                if (c == 63) {
+                    type = "Question mark";
+
+                    return type;
+                }
+            case '@':
+                if (c == 64) {
+                    type = "At symbol";
+
+                    return type;
+                }
+            case '[':
+                if (c == 91) {
+                    type = "Left Bracket";
+                    return type;
+                }
+            case ']':
+                if (c == 93) {
+                    return "Right Bracket";
+                }
+            case '^':
+                if (c == 94) {
+                    type = "Caret";
+
+                    return type;
+                }
+            case '_':
+                if (c == 95) {
+                    type = "Underscore";
+
+                    return type;
+                }
+            case '´':
+                if (c == 96) {
+                    type = "Apostrophe";
+                    return type;
+                }
+            case '{':
+                if (c == 123) {
+                    type = "Left Brace";
+                    return type;
+                }
+            case '|':
+                if (c == 124) {
+                    type = "Vertical line";
+                    return type;
+                }
+            case '}':
+                if (c == 125) {
+                    type = "Right Brace";
+                    return type;
+                }
+            case '~':
+                if (c == 33) {
+                    type = "Tilde";
+
+                    return type;
+                }
+                break;
+        }
+        return type;
+    }
+
     boolean isCharacter(char character) {
         int charac = (int) character;
         return (charac >= 33 && charac <= 47)
-                || (charac >= 58 && charac <= 96)
+                || (charac >= 58 && charac <= 64)
+                || (charac >= 91 && charac <= 96)
                 || (charac >= 123 && charac <= 254);
-    }
-
-    boolean isSimpleCharacter(char sign) {
-        if (sign == '-'
-                || sign == '}'
-                || sign == ';'
-                || sign == '('
-                || sign == ')'
-                || sign == '+'
-                || sign == '*'
-                || sign == '{'
-                || sign == '>'
-                || sign == '<'
-                || sign == '!') {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     boolean isKeyword(String sign) {
         boolean s = false;
         for (String r : keywords) {
+            if (r.equals(sign)) {
+                s = true;
+            }
+        }
+        return s;
+    }
+
+    boolean isIdentif(String sign) {
+        boolean s = false;
+        for (String r : ident) {
             if (r.equals(sign)) {
                 s = true;
             }
@@ -422,34 +594,40 @@ public class LexicalAnalyzer {
     }
 
     public void addSymbol() {
-        this.addStorage(symbols, token, "Identifiers", ID_IDENTIF);
-        this.addStorage(validT, token, "Identifiers", ID_IDENTIF);
-        reset();
+        if (isIdentif(token)) {
+            
+            this.addStorage(symbols, token, "Identifiers", ID_IDENTIF, "Int");
+            this.addStorage(validT, token, "Identifiers", ID_IDENTIF++, "Int");
+            reset();
+        } else {
+            this.addErrors();
+        }
     }
 
     public void addSimpleCharacter() {
         char c = token.charAt(0);
-        this.addStorage(simple, token, "Simple Character", (int) c);
-        this.addStorage(validT, token, "Simple Character", (int) c);
+        
+        this.addStorage(simple, token, "Simple Character", (int) c, charType(c));
+        this.addStorage(validT, token, "Simple Character", (int) c, charType(c));
         reset();
     }
 
     public void addInts() {
-        this.addStorage(intNum, token, "Int Numbers", ID_INT_NUM);
-        this.addStorage(validT, token, "Int Numbers", ID_INT_NUM);
+        this.addStorage(intNum, token, "Int Numbers", ID_INT_NUM, "Int");
+        this.addStorage(validT, token, "Int Numbers", ID_INT_NUM, "Int");
         reset();
     }
 
     public void addFloats() {
-        this.addStorage(floatNum, token, "Float Numbers", ID_FLOAT_NUM);
-        this.addStorage(validT, token, "Float Numbers", ID_FLOAT_NUM);
+        this.addStorage(floatNum, token, "Float Numbers", ID_FLOAT_NUM, "Float");
+        this.addStorage(validT, token, "Float Numbers", ID_FLOAT_NUM, "Float");
         reset();
     }
 
     public void addKeywords() {
         if (isKeyword(token)) {
-            this.addStorage(kw, token, "Keywords", ID_KEYWORD);
-            this.addStorage(validT, token, "Keywords", ID_KEYWORD++);
+            this.addStorage(kw, token, "Keywords", ID_KEYWORD, "Boolean expression");
+            this.addStorage(validT, token, "Keywords", ID_KEYWORD++, "Boolean expression ");
             reset();
         } else {
             this.addErrors();
@@ -457,13 +635,17 @@ public class LexicalAnalyzer {
     }
 
     public void addErrors() {
-        this.addStorage(errors, token, "Errors", ID_ERROR);
+        this.addStorage(errors, token, "Errors", ID_ERROR, "Error");
         reset();
     }
 
-    private void addStorage(ListSt st, String word, String type, int id) {
-        Token token = new Token(word, type, id);
-        st.saveUp(token);
+    private void addStorage(ListSt st, String word, String tkn, int id, String type){
+        Token token = new Token(word, tkn, id, type);
+        if(st.exists(token)){
+            token = st.getTokenbyId(id);
+            token.setRep(token.getRep()+1);
+        }else{
+        st.saveUp(token);}
     }
 
     private boolean endLine(String line, int pos) {
@@ -483,16 +665,17 @@ public class LexicalAnalyzer {
     }
 
     public void show() {
+        System.out.println("    Lexeme    | ID  |    Token    |   Type   |  Repetitions");
         this.symbols.show();
         System.out.println("\t");
         this.kw.show();
         System.out.println("\t");
-//        this.intNum.show();
-//        System.out.println("\t");
-//        this.floatNum.show();
-//        System.out.println("\t");
-//        this.simple.show();
-//        System.out.println("\t");
+        this.intNum.show();
+        System.out.println("\t");
+        this.floatNum.show();
+        System.out.println("\t");
+        this.simple.show();
+        System.out.println("\t");
 
     }
 
@@ -523,7 +706,5 @@ public class LexicalAnalyzer {
         String file = "src\\LexicalA\\TestProgram.txt";
         LexicalAnalyzer analyzer = new LexicalAnalyzer(file);
         analyzer.readFile();
-
+        }
     }
-
-}

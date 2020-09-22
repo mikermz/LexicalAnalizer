@@ -54,5 +54,28 @@ public class ListSt {
         }
 
     }
+    public Token getTokenbyId(int id){
+        Node nd=start;
+        while(nd!=null){
+            if (nd.getToken().id == id) {
+                return nd.getToken();
+            }
+            nd=nd.getNext();
+        }
+        return null;
+        
+    }
+
+    public boolean exists(Token itemId) {
+        Node nd;
+        nd = start;
+        while (nd != null) {
+            if (nd.getToken().id == itemId.id) {
+                return true;
+            }
+            nd=nd.getNext();
+        }
+        return false;
+    }
 
 }

@@ -1,4 +1,3 @@
-
 package LexicalA;
 
 /**
@@ -8,12 +7,24 @@ package LexicalA;
 public class Token {
     String lex;
     int id;
+    String token;
     String type;
+    int rep;
+
+    public int getRep() {
+        return rep;
+    }
+
+    public void setRep(int rep) {
+        this.rep = rep;
+    }
     
-    public Token(String lex,  String type, int id){
+    public Token(String lex,  String token, int id, String type){
         this.lex = lex;
         this.id = id;
+        this.token = token;
         this.type = type;
+        rep =1;
     }
     //Token
     public String getLex(){
@@ -21,6 +32,9 @@ public class Token {
     }
     public int getId(){
         return id;
+    }
+    public String getToken(){
+        return token;
     }
     public String getType(){
         return type;
@@ -31,13 +45,17 @@ public class Token {
     public void setId(int id){
         this.id = id;
     }
+    public void setToken(String token){
+        this.token = token;
+    }
     public void setType(String type){
         this.type = type;
     }
 
 @Override    
     public String toString(){
-        return " << " + lex + " >> ID:" + id + " -> "+ String.valueOf(type);
+        return " << " + lex + " >> | " + id + " | "+ String.valueOf(token)
+           + " | " + String.valueOf(type)  + "  |  ";
         
     }
 }
