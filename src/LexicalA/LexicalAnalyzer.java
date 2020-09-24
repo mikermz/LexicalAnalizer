@@ -641,11 +641,13 @@ public class LexicalAnalyzer {
 
     private void addStorage(ListSt st, String word, String tkn, int id, String type){
         Token token = new Token(word, tkn, id, type);
+       
         if(st.exists(token)){
             token = st.getTokenbyId(id);
             token.setRep(token.getRep()+1);
         }else{
-        st.saveUp(token);}
+        st.saveUp(token);
+    }
     }
 
     private boolean endLine(String line, int pos) {

@@ -55,7 +55,7 @@ public class Token {
 @Override    
     public String toString(){
         return " << " + lex + " >> | " + id + " | "+ String.valueOf(token)
-           + " | " + String.valueOf(type)  + "  |  ";
+           + " | " + String.valueOf(type)  + "  |  "+String.valueOf(rep);
         
     }
 }
