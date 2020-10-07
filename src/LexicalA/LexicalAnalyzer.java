@@ -34,6 +34,7 @@ public class LexicalAnalyzer {
     private int ID_KEYWORD = 600;
     private int ID_IDENTIF = 800;
     private FileReader file;
+    private int lineCount = 1;
     private ListSt errors, symbols, validT, kw, simple, intNum, floatNum;
     char state = '0';
     int linePos = 0;
@@ -46,6 +47,7 @@ public class LexicalAnalyzer {
     boolean keep = true;
     boolean cut = false;
     boolean error = false;
+    boolean isId = false;
 
     //String keywords []= new FileReader("src//LexicalA//Keywords.txt").array();
     String keywords[] = new String[]{"programa", "begin", "end"};
@@ -67,6 +69,7 @@ public class LexicalAnalyzer {
         currentLine = file.lineReader();
         while (currentLine != null) {
             for (int i = 0; i < currentLine.length(); i++) {
+
                 this.analyzer(i);
                 if (cut || i == currentLine.length() - 1) {
                     if (idToken == -1) {
@@ -88,9 +91,10 @@ public class LexicalAnalyzer {
                     cut = false;
 
                 }
+
             }
             currentLine = file.lineReader();
-
+            lineCount++;
         }
         reset();
         show();
@@ -594,40 +598,44 @@ public class LexicalAnalyzer {
     }
 
     public void addSymbol() {
-        if (isIdentif(token)) {
-            
-            this.addStorage(symbols, token, "Identifiers", ID_IDENTIF, "Int");
-            this.addStorage(validT, token, "Identifiers", ID_IDENTIF++, "Int");
-            reset();
-        } else {
-            this.addErrors();
-        }
+//        if (isIdentif(token)) {
+//            if(validT.existsLex(token)){
+        isId = true;
+        this.addStorage(symbols, token, "Identifiers", ID_IDENTIF, "Int",""+ lineCount);
+        this.addStorage(validT, token, "Identifiers", ID_IDENTIF, "Int",""+ lineCount);
+//            }else{
+//            
+//            }
+//            reset();
+//        } else {
+//            this.addErrors();
+//        }
     }
 
     public void addSimpleCharacter() {
         char c = token.charAt(0);
-        
-        this.addStorage(simple, token, "Simple Character", (int) c, charType(c));
-        this.addStorage(validT, token, "Simple Character", (int) c, charType(c));
+
+        this.addStorage(simple, token, "Simple Character", (int) c, charType(c),""+ lineCount);
+        this.addStorage(validT, token, "Simple Character", (int) c, charType(c),""+ lineCount);
         reset();
     }
 
     public void addInts() {
-        this.addStorage(intNum, token, "Int Numbers", ID_INT_NUM, "Int");
-        this.addStorage(validT, token, "Int Numbers", ID_INT_NUM, "Int");
+        this.addStorage(intNum, token, "Int Numbers", ID_INT_NUM, "Int",""+ lineCount);
+        this.addStorage(validT, token, "Int Numbers", ID_INT_NUM, "Int",""+ lineCount);
         reset();
     }
 
     public void addFloats() {
-        this.addStorage(floatNum, token, "Float Numbers", ID_FLOAT_NUM, "Float");
-        this.addStorage(validT, token, "Float Numbers", ID_FLOAT_NUM, "Float");
+        this.addStorage(floatNum, token, "Float Numbers", ID_FLOAT_NUM, "Float",""+ lineCount);
+        this.addStorage(validT, token, "Float Numbers", ID_FLOAT_NUM, "Float",""+ lineCount);
         reset();
     }
 
     public void addKeywords() {
         if (isKeyword(token)) {
-            this.addStorage(kw, token, "Keywords", ID_KEYWORD, "Boolean expression");
-            this.addStorage(validT, token, "Keywords", ID_KEYWORD++, "Boolean expression ");
+            this.addStorage(kw, token, "Keywords", ID_KEYWORD, "Boolean expression",""+ lineCount);
+            this.addStorage(validT, token, "Keywords", ID_KEYWORD++, "Boolean expression ",""+ lineCount);
             reset();
         } else {
             this.addErrors();
@@ -635,19 +643,35 @@ public class LexicalAnalyzer {
     }
 
     public void addErrors() {
-        this.addStorage(errors, token, "Errors", ID_ERROR, "Error");
+        this.addStorage(errors, token, "Errors", ID_ERROR, "Error",""+ lineCount);
         reset();
     }
 
-    private void addStorage(ListSt st, String word, String tkn, int id, String type){
-        Token token = new Token(word, tkn, id, type);
-       
-        if(st.exists(token)){
-            token = st.getTokenbyId(id);
-            token.setRep(token.getRep()+1);
-        }else{
-        st.saveUp(token);
-    }
+    private void addStorage(ListSt st, String word, String tkn, int id, String type, String line) {
+        Token token = new Token(word, tkn, id, type, line);
+
+        if (isId == true) {
+            if (st.existsLex(word)) {
+                token = st.getTokenbyLex(word);
+                token.setRep(token.getRep() + 1);
+                token.setLine(token.getLine()+line);
+                isId = false;
+            } else {
+                token.setId(ID_IDENTIF++);
+                st.saveUp(token);
+                isId = false;
+
+            }
+        } else {
+            if (st.exists(token)) {
+                token = st.getTokenbyId(id);
+                token.setRep(token.getRep() + 1);
+                token.setLine(token.getLine()+line);
+            } else {
+                st.saveUp(token);
+            }
+        }
+
     }
 
     private boolean endLine(String line, int pos) {
@@ -667,7 +691,7 @@ public class LexicalAnalyzer {
     }
 
     public void show() {
-        System.out.println("    Lexeme    | ID  |    Token    |   Type   |  Repetitions");
+        System.out.println("    Lexeme    | ID  |    Token    |   Type   |  Repetitions | Line");
         this.symbols.show();
         System.out.println("\t");
         this.kw.show();
@@ -708,5 +732,5 @@ public class LexicalAnalyzer {
         String file = "src\\LexicalA\\TestProgram.txt";
         LexicalAnalyzer analyzer = new LexicalAnalyzer(file);
         analyzer.readFile();
-        }
     }
+}

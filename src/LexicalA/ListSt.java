@@ -65,12 +65,35 @@ public class ListSt {
         return null;
         
     }
+    public Token getTokenbyLex(String lex){
+        Node nd=start;
+        while(nd!=null){
+            if (nd.getToken().lex.equals(lex) ) {
+                return nd.getToken();
+            }
+            nd=nd.getNext();
+        }
+        return null;
+        
+    }
 
     public boolean exists(Token itemId) {
         Node nd;
         nd = start;
         while (nd != null) {
             if (nd.getToken().id == itemId.id) {
+                return true;
+            }
+            nd=nd.getNext();
+        }
+        return false;
+    }
+    
+    public boolean existsLex(String lex) {
+        Node nd;
+        nd = start;
+        while (nd != null) {
+            if (nd.getToken().lex.equals(lex)) {
                 return true;
             }
             nd=nd.getNext();
